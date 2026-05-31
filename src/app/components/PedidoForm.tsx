@@ -26,12 +26,12 @@ export function PedidoForm({ isOpen, onClose, onSave, clientes, pedido }: Pedido
 
   const [produtos, setProdutos] = useState<ProdutoPedido[]>([{
     id: generateId(),
-    nome: '',
-    quantidade: 1,
-    valorUnitario: 0,
-    custoUnitario: 0,
-    subtotal: 0,
-    custoTotal: 0
+    nome: 'Excedente Residencial - Cluster 01',
+    quantidade: 150,
+    valorUnitario: 0.45,
+    custoUnitario: 0.18,
+    subtotal: 67.5,
+    custoTotal: 27
   }]);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -40,12 +40,12 @@ export function PedidoForm({ isOpen, onClose, onSave, clientes, pedido }: Pedido
     setFormData({ clienteId: '', observacoes: '' });
     setProdutos([{
       id: generateId(),
-      nome: '',
-      quantidade: 1,
-      valorUnitario: 0,
-      custoUnitario: 0,
-      subtotal: 0,
-      custoTotal: 0
+      nome: 'Excedente Residencial - Cluster 01',
+      quantidade: 150,
+      valorUnitario: 0.45,
+      custoUnitario: 0.18,
+      subtotal: 67.5,
+      custoTotal: 27
     }]);
     setErrors({});
   };
@@ -90,12 +90,12 @@ export function PedidoForm({ isOpen, onClose, onSave, clientes, pedido }: Pedido
   const addProduto = () => {
     setProdutos([...produtos, {
       id: generateId(),
-      nome: '',
-      quantidade: 1,
-      valorUnitario: 0,
-      custoUnitario: 0,
-      subtotal: 0,
-      custoTotal: 0
+      nome: 'Lote de Energia (Origem)',
+      quantidade: 100,
+      valorUnitario: 0.45,
+      custoUnitario: 0.18,
+      subtotal: 45,
+      custoTotal: 18
     }]);
   };
 
@@ -109,21 +109,18 @@ export function PedidoForm({ isOpen, onClose, onSave, clientes, pedido }: Pedido
     const newErrors: Record<string, string> = {};
 
     if (!formData.clienteId) {
-      newErrors.cliente = 'Cliente é obrigatório';
+      newErrors.cliente = 'Consumidor é obrigatório';
     }
 
     produtos.forEach((produto, index) => {
       if (!produto.nome.trim()) {
-        newErrors[`produto_${index}_nome`] = 'Nome do produto é obrigatório';
+        newErrors[`produto_${index}_nome`] = 'Lote de Energia é obrigatório';
       }
       if (produto.quantidade <= 0) {
-        newErrors[`produto_${index}_quantidade`] = 'Quantidade deve ser maior que zero';
+        newErrors[`produto_${index}_quantidade`] = 'Volume deve ser maior que zero';
       }
       if (produto.valorUnitario <= 0) {
-        newErrors[`produto_${index}_valor`] = 'Valor deve ser maior que zero';
-      }
-      if (produto.custoUnitario < 0) {
-        newErrors[`produto_${index}_custo`] = 'Custo não pode ser negativo';
+        newErrors[`produto_${index}_valor`] = 'Preço Unitário deve ser maior que zero';
       }
     });
 
@@ -158,203 +155,157 @@ export function PedidoForm({ isOpen, onClose, onSave, clientes, pedido }: Pedido
 
   const valorTotal = produtos.reduce((acc, p) => acc + p.subtotal, 0);
   const custoTotal = produtos.reduce((acc, p) => acc + p.custoTotal, 0);
-  const lucroTotal = valorTotal - custoTotal;
+  const taxaApp = produtos.reduce((acc, p) => acc + (p.quantidade * 0.05), 0);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
-        <DialogHeader>
-          <DialogTitle>
-            {pedido ? 'Editar Pedido' : 'Novo Pedido'}
-          </DialogTitle>
-          <DialogDescription>
-            {pedido ? 'Atualize as informações do pedido' : 'Crie um novo pedido com produtos e custos'}
-          </DialogDescription>
+      <DialogContent className="max-w-lg bg-[#0a2316] text-[#00E676] p-6 rounded-xl border border-[#004D40] font-sans">
+        <DialogHeader className="flex flex-row justify-between items-center mb-4 space-y-0">
+          <div>
+            <DialogTitle className="text-xl font-bold text-white">
+              {pedido ? 'Editar Transação P2P' : 'Novo Pedido P2P'}
+            </DialogTitle>
+            <DialogDescription className="text-xs text-gray-400">
+              Crie uma nova transação de créditos de energia à distância
+            </DialogDescription>
+          </div>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Seção Consumidor */}
           <div>
-            <Label htmlFor="cliente">Cliente *</Label>
+            <Label htmlFor="cliente" className="block text-xs font-semibold text-white mb-1">Comércio Comprador *</Label>
             <Select value={formData.clienteId} onValueChange={(value) => setFormData(prev => ({ ...prev, clienteId: value }))}>
-              <SelectTrigger className={errors.cliente ? 'border-red-500' : ''}>
-                <SelectValue placeholder="Selecione um cliente" />
+              <SelectTrigger className={`w-full bg-[#121212] border ${errors.cliente ? 'border-red-500' : 'border-[#004D40]'} rounded p-2 text-white text-sm h-10`}>
+                <SelectValue placeholder="Selecione um estabelecimento" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-[#121212] border-[#004D40] text-white">
                 {clientes.map((cliente) => (
-                  <SelectItem key={cliente.id} value={cliente.id}>
-                    {cliente.nome} - {cliente.telefone}
+                  <SelectItem key={cliente.id} value={cliente.id} className="hover:bg-[#004D40] focus:bg-[#004D40] text-white">
+                    {cliente.nome}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            {errors.cliente && (
-              <p className="text-sm text-red-500 mt-1">{errors.cliente}</p>
-            )}
           </div>
 
-          <div>
-            <div className="mb-4">
-              <Label>Produtos *</Label>
-            </div>
-
-            <div className="space-y-4">
-              {produtos.map((produto, index) => (
-                <Card key={produto.id} className="p-4">
-                  <div className="grid grid-cols-1 gap-4">
-                    {/* Nome do produto em linha separada para ter mais espaço */}
-                    <div>
-                      <Label htmlFor={`produto_${index}_nome`}>Nome do Produto</Label>
-                      <Input
-                        id={`produto_${index}_nome`}
-                        value={produto.nome}
-                        onChange={(e) => updateProduto(index, 'nome', e.target.value)}
-                        className={`border border-input ${errors[`produto_${index}_nome`] ? 'border-red-500' : ''}`}
-                        placeholder="Digite o nome do produto"
-                      />
-                      {errors[`produto_${index}_nome`] && (
-                        <p className="text-sm text-red-500 mt-1">{errors[`produto_${index}_nome`]}</p>
-                      )}
-                    </div>
-
-                    {/* Campos numéricos em grid responsivo */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-                      <div>
-                        <Label htmlFor={`produto_${index}_quantidade`}>Quantidade</Label>
-                        <Input
-                          id={`produto_${index}_quantidade`}
-                          type="number"
-                          min="1"
-                          value={produto.quantidade}
-                          onChange={(e) => updateProduto(index, 'quantidade', parseInt(e.target.value) || 0)}
-                          className={`border border-input ${errors[`produto_${index}_quantidade`] ? 'border-red-500' : ''}`}
-                          placeholder="0"
-                        />
-                        {errors[`produto_${index}_quantidade`] && (
-                          <p className="text-sm text-red-500 mt-1">{errors[`produto_${index}_quantidade`]}</p>
-                        )}
-                      </div>
-
-                      <div>
-                        <Label htmlFor={`produto_${index}_valor`}>Valor Unitário</Label>
-                        <Input
-                          id={`produto_${index}_valor`}
-                          type="number"
-                          step="0.01"
-                          min="0"
-                          value={produto.valorUnitario}
-                          onChange={(e) => updateProduto(index, 'valorUnitario', parseFloat(e.target.value) || 0)}
-                          className={`border border-input ${errors[`produto_${index}_valor`] ? 'border-red-500' : ''}`}
-                          placeholder="0,00"
-                        />
-                        {errors[`produto_${index}_valor`] && (
-                          <p className="text-sm text-red-500 mt-1">{errors[`produto_${index}_valor`]}</p>
-                        )}
-                      </div>
-
-                      <div>
-                        <Label htmlFor={`produto_${index}_custo`}>Custo Unitário</Label>
-                        <Input
-                          id={`produto_${index}_custo`}
-                          type="number"
-                          step="0.01"
-                          min="0"
-                          value={produto.custoUnitario}
-                          onChange={(e) => updateProduto(index, 'custoUnitario', parseFloat(e.target.value) || 0)}
-                          className={`border border-input ${errors[`produto_${index}_custo`] ? 'border-red-500' : ''}`}
-                          placeholder="0,00"
-                        />
-                        {errors[`produto_${index}_custo`] && (
-                          <p className="text-sm text-red-500 mt-1">{errors[`produto_${index}_custo`]}</p>
-                        )}
-                      </div>
-
-                      <div className="flex items-end">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeProduto(index)}
-                          disabled={produtos.length === 1}
-                          className="p-2 text-red-500 hover:text-red-700 w-full"
-                        >
-                          <Trash2 className="w-4 h-4 mr-2" />
-                          Remover
-                        </Button>
-                      </div>
-                    </div>
+          <div className="space-y-4 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
+            {produtos.map((produto, index) => (
+              <div key={produto.id} className="bg-[#071a10] p-4 rounded-lg border border-[#004D40]">
+                <div className="mb-3">
+                  <div className="flex justify-between items-center mb-1">
+                    <Label htmlFor={`produto_${index}_nome`} className="block text-xs text-gray-400">Origem do Lote Solar</Label>
+                    {produtos.length > 1 && (
+                      <button type="button" onClick={() => removeProduto(index)} className="text-red-400 hover:text-red-300">
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    )}
                   </div>
+                  <Input
+                    id={`produto_${index}_nome`}
+                    value={produto.nome}
+                    onChange={(e) => updateProduto(index, 'nome', e.target.value)}
+                    className="w-full bg-[#121212] border border-[#003322] rounded p-2 text-sm text-white h-9"
+                    placeholder="Ex: Excedente Residencial - Bloco A"
+                  />
+                </div>
 
-                  <div className="mt-3 pt-3 border-t border-border">
-                    <div className="grid grid-cols-3 gap-4 text-sm">
-                      <div>
-                        <span className="text-muted-foreground">Subtotal: </span>
-                        <span className="font-medium">{formatCurrency(produto.subtotal)}</span>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">Custo Total: </span>
-                        <span className="font-medium">{formatCurrency(produto.custoTotal)}</span>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">Lucro: </span>
-                        <span className="font-medium text-green-600">{formatCurrency(produto.subtotal - produto.custoTotal)}</span>
-                      </div>
-                    </div>
+                <div className="grid grid-cols-2 gap-3 mb-3">
+                  <div>
+                    <Label htmlFor={`produto_${index}_quantidade`} className="block text-xs text-gray-400 mb-1">Volume (kWh)</Label>
+                    <Input
+                      id={`produto_${index}_quantidade`}
+                      type="number"
+                      value={produto.quantidade}
+                      onChange={(e) => updateProduto(index, 'quantidade', parseFloat(e.target.value) || 0)}
+                      className="w-full bg-[#121212] border border-[#004D40] rounded p-2 text-sm text-white h-9"
+                    />
                   </div>
-                </Card>
-              ))}
-              
-              {/* Botão Adicionar Produto movido para baixo com validação */}
-              <div className="flex justify-center pt-4">
-                <Button 
-                  type="button" 
-                  onClick={addProduto} 
-                  variant="outline" 
-                  size="sm"
-                  disabled={produtos.some(p => !p.nome.trim() || p.quantidade <= 0 || p.valorUnitario <= 0)}
-                  className="w-full max-w-xs"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Adicionar Produto
-                </Button>
+                  <div>
+                    <Label htmlFor={`produto_${index}_valor`} className="block text-xs text-gray-400 mb-1">Preço Unitário (R$/kWh)</Label>
+                    <Input
+                      id={`produto_${index}_valor`}
+                      type="number"
+                      step="0.01"
+                      value={produto.valorUnitario}
+                      onChange={(e) => updateProduto(index, 'valorUnitario', parseFloat(e.target.value) || 0)}
+                      className="w-full bg-[#121212] border border-[#00E676] rounded p-2 text-sm text-white h-9"
+                    />
+                  </div>
+                </div>
+
+                <div className="mb-4">
+                  <Label htmlFor={`produto_${index}_custo`} className="block text-xs text-gray-400 mb-1">Encargo Fio B 2026 (R$/kWh)</Label>
+                  <Input
+                    id={`produto_${index}_custo`}
+                    type="number"
+                    step="0.01"
+                    value={produto.custoUnitario}
+                    onChange={(e) => updateProduto(index, 'custoUnitario', parseFloat(e.target.value) || 0)}
+                    className="w-full bg-[#121212] border border-[#003322] rounded p-2 text-sm text-gray-500 h-9"
+                  />
+                </div>
+
+                <hr className="border-[#004D40] my-3" />
+
+                <div className="grid grid-cols-3 text-center text-[10px] mt-2">
+                  <div>
+                    <span className="text-gray-400 block">Subtotal</span>
+                    <strong className="text-white text-xs">R$ {produto.subtotal.toFixed(2)}</strong>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 block">Custo Fio B</span>
+                    <strong className="text-white text-xs">R$ {produto.custoTotal.toFixed(2)}</strong>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 block">Taxa App (5c)</span>
+                    <strong className="text-[#00E676] text-xs">R$ {(produto.quantidade * 0.05).toFixed(2)}</strong>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <button 
+            type="button" 
+            onClick={addProduto}
+            className="w-full border border-dashed border-[#004D40] text-gray-400 py-2 rounded text-xs hover:bg-[#071a10] transition-colors"
+          >
+            + Adicionar Outro Lote
+          </button>
+
+          <div className="bg-[#071a10] p-4 rounded-lg border border-[#004D40] mt-4">
+            <h3 className="text-xs font-semibold text-white mb-2 uppercase tracking-wider">Resumo Consolidado</h3>
+            <div className="grid grid-cols-3 gap-2 text-center">
+              <div>
+                <p className="text-[10px] text-gray-400">Total kWh</p>
+                <p className="text-sm font-bold text-white">{produtos.reduce((acc, p) => acc + p.quantidade, 0)}</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-gray-400">Total Bruto</p>
+                <p className="text-sm font-bold text-white">R$ {valorTotal.toFixed(2)}</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-gray-400">Total Taxas</p>
+                <p className="text-sm font-bold text-[#00E676]">R$ {taxaApp.toFixed(2)}</p>
               </div>
             </div>
           </div>
 
-          <div>
-            <Label htmlFor="observacoes">Observações</Label>
-            <Textarea
-              id="observacoes"
-              value={formData.observacoes}
-              onChange={(e) => setFormData(prev => ({ ...prev, observacoes: e.target.value }))}
-              rows={3}
-            />
-          </div>
-
-          <Card className="p-4 bg-accent">
-            <h3 className="font-semibold mb-3">Resumo do Pedido</h3>
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <p className="text-sm text-muted-foreground">Valor Total</p>
-                <p className="text-xl font-semibold">{formatCurrency(valorTotal)}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Custo Total</p>
-                <p className="text-xl font-semibold">{formatCurrency(custoTotal)}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Lucro Bruto Total</p>
-                <p className="text-xl font-semibold text-green-600">{formatCurrency(lucroTotal)}</p>
-              </div>
-            </div>
-          </Card>
-
-          <div className="flex gap-2 pt-4">
-            <Button type="button" variant="outline" onClick={onClose} className="flex-1">
+          <div className="flex gap-2 pt-2">
+            <button 
+              type="button" 
+              onClick={onClose} 
+              className="flex-1 bg-transparent border border-[#004D40] text-gray-400 font-bold py-2 rounded text-sm hover:bg-[#071a10]"
+            >
               Cancelar
-            </Button>
-            <Button type="submit" className="flex-1">
-              {pedido ? 'Atualizar' : 'Salvar'} Pedido
-            </Button>
+            </button>
+            <button 
+              type="submit" 
+              className="flex-1 bg-[#121212] hover:bg-[#004D40] border border-[#00E676] text-white font-bold py-2 rounded transition-all text-sm"
+            >
+              {pedido ? '✓ Atualizar' : '+ Confirmar Transação P2P'}
+            </button>
           </div>
         </form>
       </DialogContent>
