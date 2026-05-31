@@ -4,8 +4,9 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Card } from './ui/card';
 import { Alert, AlertDescription } from './ui/alert';
-import { Lock, User, Eye, EyeOff } from 'lucide-react';
+import { Lock, User, Eye, EyeOff, Zap } from 'lucide-react';
 import { initializeAuthDb, loginUser, registerUser, type AuthUser, type UserRole } from '../utils/authSqlite';
+import logoLight from '../../assets/logo-light.svg';
 
 interface LoginProps {
   onLogin: (usuario: AuthUser) => void;
@@ -64,13 +65,13 @@ export function Login({ onLogin }: LoginProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 to-primary/10 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md p-4 sm:p-8 shadow-lg">
+      <Card className="w-full max-w-md p-4 sm:p-8 shadow-lg bg-white/90 dark:bg-emerald-950/90 border-emerald-100 dark:border-emerald-800">
         <div className="text-center mb-6 sm:mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-primary/10 rounded-full mb-4">
-            <Lock className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+          <div className="inline-flex items-center justify-center mb-4">
+            <img src={logoLight} alt="Enertrix Logo" className="w-20 h-20 sm:w-24 sm:h-24" />
           </div>
-          <h1 className="text-xl sm:text-2xl font-semibold mb-2">Acesso ENERGETRIX</h1>
-          <p className="text-sm sm:text-base text-muted-foreground">Entre ou cadastre um usuário comprador/vendedor</p>
+          <h1 className="text-xl sm:text-2xl font-bold mb-2 text-emerald-900 dark:text-emerald-50">ENERTRIX</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">Acesso ao Portal de Transações P2P</p>
         </div>
 
         <div className="mb-4 inline-flex w-full rounded-lg border border-emerald-200 bg-white p-1">
