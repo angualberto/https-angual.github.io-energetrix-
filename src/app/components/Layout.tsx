@@ -54,9 +54,9 @@ export function Layout({ children, currentPage, onPageChange, onNewClient, onNew
           <p className="text-xs text-muted-foreground">Usuário logado: {usuarioExibicao}</p>
           <div className="mt-1 flex items-center gap-2 text-sm font-semibold text-emerald-900">
             <Zap className="h-4 w-4" />
-            ENERGÉTRIX
+            ENERTRIX
           </div>
-          <p className="text-xs text-muted-foreground">Negociação de energia ponto a ponto</p>
+          <p className="text-xs text-muted-foreground">Controle de Pedidos e Vendas</p>
           <div className="mt-2 inline-flex items-center rounded-full bg-emerald-100 px-2 py-1 text-xs font-medium text-emerald-800">
             Perfil: {perfilExibicao}
           </div>

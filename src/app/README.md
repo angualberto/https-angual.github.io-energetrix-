@@ -5,7 +5,7 @@ Sistema completo para gestão de pedidos, vendas e recebimentos com relatórios 
 ## 🚀 Funcionalidades
 
 - **Gestão de Clientes**: Cadastro completo com dados de contato
-- **Controle de Pedidos**: Criação e acompanhamento de pedidos
+- **Gestão de Pedidos**: Criação e acompanhamento de pedidos
 - **Gestão de Vendas**: Conversão de pedidos em vendas totais ou parciais
 - **Sistema de Parcelamento**: Controle quinzenal/mensal com cronograma
 - **Controle de Recebimentos**: Lançamento manual de valores recebidos
