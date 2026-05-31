@@ -17,6 +17,7 @@ function figmaAssetResolver() {
 }
 
 export default defineConfig({
+  base: '/https-angual.github.io-energetrix-/',
   server: {
     allowedHosts: ['grumpy-lamps-lie.loca.lt', '.loca.lt', '.trycloudflare.com'],
   },
