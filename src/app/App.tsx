@@ -19,6 +19,24 @@ export default function App() {
   const [showPedidoForm, setShowPedidoForm] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const savedTheme = localStorage.getItem('theme');
+    return (savedTheme as 'light' | 'dark') || 'light';
+  });
+
+  // Aplicar tema
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
 
   // Estados do Supabase - SEMPRE chamado para respeitar Rules of Hooks
   const {
@@ -185,6 +203,8 @@ export default function App() {
         currentUser={currentUser?.username ?? ''}
         currentRole={currentUser?.role ?? 'vendedor'}
         onLogout={handleLogout}
+        theme={theme}
+        toggleTheme={toggleTheme}
       >
         {renderCurrentPage()}
       </Layout>

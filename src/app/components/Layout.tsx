@@ -12,8 +12,12 @@ import {
   LogOut,
   User,
   Menu,
-  Zap
+  Zap,
+  Sun,
+  Moon
 } from 'lucide-react';
+import logoLight from '../../assets/logo-light.svg';
+import logoDark from '../../assets/logo-dark.svg';
 
 interface LayoutProps {
   children: ReactNode;
@@ -24,9 +28,22 @@ interface LayoutProps {
   currentUser: string;
   currentRole: 'comprador' | 'vendedor';
   onLogout: () => void;
+  theme: 'light' | 'dark';
+  toggleTheme: () => void;
 }
 
-export function Layout({ children, currentPage, onPageChange, onNewClient, onNewPedido, currentUser, currentRole, onLogout }: LayoutProps) {
+export function Layout({ 
+  children, 
+  currentPage, 
+  onPageChange, 
+  onNewClient, 
+  onNewPedido, 
+  currentUser, 
+  currentRole, 
+  onLogout,
+  theme,
+  toggleTheme
+}: LayoutProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const usuarioExibicao = currentUser || 'admin';
@@ -48,12 +65,22 @@ export function Layout({ children, currentPage, onPageChange, onNewClient, onNew
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
-      <div className="p-4 sm:p-6 border-b border-emerald-200/70 bg-gradient-to-br from-emerald-50 via-lime-50 to-white">
-        <p className="text-sm font-medium text-emerald-900">Painel do Vendedor</p>
-        <div className="mt-2 rounded-lg border border-emerald-100 bg-white/70 p-2">
+      <div className="p-4 sm:p-6 border-b border-emerald-200/70 bg-gradient-to-br from-emerald-50 via-lime-50 to-white dark:from-emerald-950 dark:via-emerald-900 dark:to-emerald-950">
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-medium text-emerald-900 dark:text-emerald-100">Painel do Vendedor</p>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleTheme}
+            className="text-emerald-900 dark:text-emerald-100 hover:bg-emerald-100 dark:hover:bg-emerald-800"
+          >
+            {theme === 'light' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+          </Button>
+        </div>
+        <div className="mt-2 rounded-lg border border-emerald-100 dark:border-emerald-800 bg-white/70 dark:bg-emerald-900/50 p-2">
           <p className="text-xs text-muted-foreground">Usuário logado: {usuarioExibicao}</p>
-          <div className="mt-1 flex items-center gap-2 text-sm font-semibold text-emerald-900">
-            <Zap className="h-4 w-4" />
+          <div className="mt-1 flex items-center gap-2 text-sm font-semibold text-emerald-900 dark:text-emerald-50">
+            <img src={theme === 'light' ? logoLight : logoDark} alt="Enertrix Logo" className="h-6 w-auto" />
             ENERTRIX
           </div>
           <p className="text-xs text-muted-foreground">Controle de Pedidos e Vendas</p>
@@ -145,16 +172,27 @@ export function Layout({ children, currentPage, onPageChange, onNewClient, onNew
       {/* Mobile Layout */}
       <div className="flex flex-col flex-1 lg:hidden">
         {/* Mobile Header */}
-        <div className="flex items-center justify-between p-4 bg-gradient-to-r from-emerald-100 via-lime-50 to-white border-b border-emerald-200">
-          <div>
-            <p className="font-semibold text-emerald-900">Painel do Vendedor</p>
-            <p className="text-xs text-muted-foreground">Usuário logado: {usuarioExibicao}</p>
+        <div className="flex items-center justify-between p-4 bg-gradient-to-r from-emerald-100 via-lime-50 to-white dark:from-emerald-950 dark:via-emerald-900 dark:to-emerald-950 border-b border-emerald-200 dark:border-emerald-800">
+          <div className="flex items-center gap-3">
+            <img src={theme === 'light' ? logoLight : logoDark} alt="Enertrix Logo" className="h-8 w-auto" />
+            <div>
+              <p className="font-semibold text-emerald-900 dark:text-emerald-50 text-sm">Painel do Vendedor</p>
+              <p className="text-[10px] text-emerald-700 dark:text-emerald-300 uppercase font-bold tracking-tight">Enertrix</p>
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <Button
+              variant="ghost"
+              size="icon"
+              className="text-emerald-700 dark:text-emerald-300"
+              onClick={toggleTheme}
+            >
+              {theme === 'light' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+            </Button>
+            <Button
               variant="outline"
               size="sm"
-              className="border-emerald-300 text-emerald-700"
+              className="border-emerald-300 text-emerald-700 dark:border-emerald-700 dark:text-emerald-300"
               onClick={onLogout}
             >
               <LogOut className="w-4 h-4" />
