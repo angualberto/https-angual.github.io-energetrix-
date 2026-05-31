@@ -19,10 +19,17 @@ export default function App() {
   const [showPedidoForm, setShowPedidoForm] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
+  const [simulatedRole, setSimulatedRole] = useState<UserRole | null>(null);
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const savedTheme = localStorage.getItem('theme');
     return (savedTheme as 'light' | 'dark') || 'light';
   });
+
+  const currentRole = simulatedRole || currentUser?.role || 'vendedor';
+
+  const toggleSimulatedRole = () => {
+    setSimulatedRole(prev => (prev || currentUser?.role || 'vendedor') === 'comprador' ? 'vendedor' : 'comprador');
+  };
 
   // Aplicar tema
   useEffect(() => {
@@ -201,10 +208,11 @@ export default function App() {
         onNewClient={() => setShowClienteForm(true)}
         onNewPedido={() => setShowPedidoForm(true)}
         currentUser={currentUser?.username ?? ''}
-        currentRole={currentUser?.role ?? 'vendedor'}
+        currentRole={currentRole}
         onLogout={handleLogout}
         theme={theme}
         toggleTheme={toggleTheme}
+        onToggleRole={toggleSimulatedRole}
       >
         {renderCurrentPage()}
       </Layout>

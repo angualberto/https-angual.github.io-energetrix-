@@ -30,6 +30,7 @@ interface LayoutProps {
   onLogout: () => void;
   theme: 'light' | 'dark';
   toggleTheme: () => void;
+  onToggleRole?: () => void;
 }
 
 export function Layout({ 
@@ -42,7 +43,8 @@ export function Layout({
   currentRole, 
   onLogout,
   theme,
-  toggleTheme
+  toggleTheme,
+  onToggleRole
 }: LayoutProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -84,8 +86,22 @@ export function Layout({
             ENERTRIX
           </div>
           <p className="text-xs text-muted-foreground">Controle de Pedidos e Vendas</p>
-          <div className="mt-2 inline-flex items-center rounded-full bg-emerald-100 px-2 py-1 text-xs font-medium text-emerald-800">
-            Perfil: {perfilExibicao}
+          <div className="mt-2 inline-flex items-center gap-2">
+            <div className={`rounded-full px-2 py-1 text-xs font-medium ${
+              currentRole === 'comprador' ? 'bg-blue-100 text-blue-800' : 'bg-emerald-100 text-emerald-800'
+            }`}>
+              Perfil: {perfilExibicao}
+            </div>
+            {onToggleRole && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={onToggleRole}
+                className="h-6 text-[10px] uppercase tracking-wider text-muted-foreground hover:text-foreground"
+              >
+                Simular {currentRole === 'comprador' ? 'Vendedor' : 'Comprador'}
+              </Button>
+            )}
           </div>
 
           <Button
@@ -103,27 +119,31 @@ export function Layout({
       </div>
       
       <div className="p-3 sm:p-4 space-y-2">
-        <Button 
-          onClick={() => {
-            onNewPedido();
-            setIsMobileMenuOpen(false);
-          }}
-          className="w-full bg-emerald-600 text-white hover:bg-emerald-700"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Comprar
-        </Button>
-        <Button 
-          onClick={() => {
-            onNewClient();
-            setIsMobileMenuOpen(false);
-          }}
-          variant="outline"
-          className="w-full border-emerald-300 text-emerald-700"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Vendedor
-        </Button>
+        {(currentRole === 'comprador' || currentRole === 'vendedor') && (
+          <Button 
+            onClick={() => {
+              onNewPedido();
+              setIsMobileMenuOpen(false);
+            }}
+            className="w-full bg-emerald-600 text-white hover:bg-emerald-700"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Comprar Energia
+          </Button>
+        )}
+        {currentRole === 'vendedor' && (
+          <Button 
+            onClick={() => {
+              onNewClient();
+              setIsMobileMenuOpen(false);
+            }}
+            variant="outline"
+            className="w-full border-emerald-300 text-emerald-700 dark:border-emerald-700 dark:text-emerald-300"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Novo Vendedor
+          </Button>
+        )}
       </div>
 
       <nav className="px-3 sm:px-4 space-y-2 flex-1">
